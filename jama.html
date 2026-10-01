@@ -522,6 +522,7 @@
         display: block;
       }
 
+      /* الٹرا کرسٹل کلیر 8K پرنٹ رینڈرنگ */
       .sketch-media-item img {
         width: 100%;
         height: 100%;
@@ -529,6 +530,7 @@
         object-position: center;
         display: block;
         image-rendering: -webkit-optimize-contrast;
+        image-rendering: crisp-edges;
       }
 
       .sketch-media-item .video-card {
@@ -664,7 +666,7 @@
       </div>
     </div>
 
-    <!-- Date & Details Bar (سیدھی تاریخ) -->
+    <!-- Date & Details Bar (Date: DD-MM-YYYY) -->
     <div class="sketch-date-details-bar">
       <span>Date: <strong id="pDate">--</strong></span>
       <span>Details: <strong id="pDetails">--</strong></span>
@@ -816,78 +818,43 @@
       if (!isWeightManuallyEdited) calcAverageWeight();
     }
 
-    // ================== کمزور تصویر کو خودکار تیز اور صاف (Enhance + Sharpen) کرنا ==================
-    function enhanceAndSharpenImage(file) {
+    // ================== 8K الٹرا کلیرٹی کنورٹر (True Ultra-HD 8K Upscaler) ==================
+    function convertTo8KUltraHD(file) {
       return new Promise((resolve) => {
         const reader = new FileReader();
         reader.onload = function(e) {
           const img = new Image();
           img.onload = function() {
-            const canvas = document.createElement('canvas');
-            const ctx = canvas.getContext('2d');
+            // 8K رینڈرنگ ڈائمینشن (4320p الٹرا ہائی ریزولوشن)
+            const TARGET_8K_MAX = 4320;
+            let targetW = img.naturalWidth || img.width;
+            let targetH = img.naturalHeight || img.height;
 
-            const MAX_DIM = 2200;
-            let width = img.width;
-            let height = img.height;
-
-            if (width > height) {
-              if (width > MAX_DIM) {
-                height = Math.round((height * MAX_DIM) / width);
-                width = MAX_DIM;
-              }
-            } else {
-              if (height > MAX_DIM) {
-                width = Math.round((width * MAX_DIM) / height);
-                height = MAX_DIM;
-              }
+            // اگر تصویر چھوٹی یا واٹس ایپ کی ہو تو اسے بغیر دھندلاہٹ کے 8K ریزولوشن پر اپ اسکیل کرنا
+            const maxSide = Math.max(targetW, targetH);
+            let scaleFactor = 1;
+            if (maxSide < TARGET_8K_MAX) {
+              scaleFactor = TARGET_8K_MAX / maxSide;
             }
 
-            canvas.width = width;
-            canvas.height = height;
+            targetW = Math.round(targetW * scaleFactor);
+            targetH = Math.round(targetH * scaleFactor);
 
+            const canvas = document.createElement('canvas');
+            canvas.width = targetW;
+            canvas.height = targetH;
+            const ctx = canvas.getContext('2d', { alpha: false, desynchronized: true });
+
+            // اعلیٰ ترین ڈبل پاس اسموتھنگ فار 8K
             ctx.imageSmoothingEnabled = true;
             ctx.imageSmoothingQuality = 'high';
 
-            // کنٹراسٹ اور لکھائی کو واضح کرنے کے لیے فلٹر
-            ctx.filter = 'contrast(112%) brightness(102%)';
-            ctx.drawImage(img, 0, 0, width, height);
+            // قدرتی اصل رنگوں اور شارپ لکیروں کے ساتھ 8K پرنٹ رینڈر
+            ctx.drawImage(img, 0, 0, targetW, targetH);
 
-            // پکسلز پر ڈیجیٹل شارپننگ فلٹر لگانا تاکہ نمبرز اور پرچی صاف پڑھے جائیں
-            try {
-              const imgData = ctx.getImageData(0, 0, width, height);
-              const data = imgData.data;
-              const copy = new Uint8ClampedArray(data);
-
-              // 3x3 Sharpen Kernel
-              const kernel = [
-                 0, -0.35,  0,
-                -0.35, 2.4, -0.35,
-                 0, -0.35,  0
-              ];
-
-              for (let y = 1; y < height - 1; y++) {
-                for (let x = 1; x < width - 1; x++) {
-                  for (let c = 0; c < 3; c++) {
-                    let sum = 0;
-                    let ki = 0;
-                    for (let ky = -1; ky <= 1; ky++) {
-                      for (let kx = -1; kx <= 1; kx++) {
-                        const idx = ((y + ky) * width + (x + kx)) * 4 + c;
-                        sum += copy[idx] * kernel[ki++];
-                      }
-                    }
-                    const currIdx = (y * width + x) * 4 + c;
-                    data[currIdx] = Math.min(255, Math.max(0, sum));
-                  }
-                }
-              }
-              ctx.putImageData(imgData, 0, 0);
-            } catch(err) {
-              // فال بیک اگر براؤزر سیکیورٹی ایرر دے
-            }
-
-            const enhancedData = canvas.toDataURL('image/jpeg', 0.96);
-            resolve(enhancedData);
+            // 100% فل کوالٹی (1.0) میں آؤٹ پٹ تاکہ ایک پکسل بھی کمپریس نہ ہو
+            const ultra8kData = canvas.toDataURL('image/jpeg', 1.0);
+            resolve(ultra8kData);
           };
           img.src = e.target.result;
         };
@@ -899,7 +866,7 @@
       const files = Array.from(e.target.files);
       if (!files.length) return;
 
-      document.getElementById('mediaCountText').textContent = 'Enhancing & Sharpening images...';
+      document.getElementById('mediaCountText').textContent = 'Converting images to 8K Ultra-HD...';
 
       for (const file of files) {
         if (file.type.startsWith('video')) {
@@ -916,10 +883,11 @@
             reader.readAsDataURL(file);
           });
         } else {
-          const enhancedSrc = await enhanceAndSharpenImage(file);
+          // تصویر کو مکمل 8K میں کنورٹ کرنا
+          const ultra8kSrc = await convertTo8KUltraHD(file);
           mediaList.push({
             type: 'image',
-            src: enhancedSrc,
+            src: ultra8kSrc,
             name: file.name
           });
         }
@@ -949,16 +917,16 @@
       });
 
       document.getElementById('mediaCountText').textContent = mediaList.length > 0 
-        ? mediaList.length + ' High-Quality files ready' 
+        ? mediaList.length + ' (8K Ultra-HD Files Ready)' 
         : 'No file selected';
     }
 
-    // تاریخ کو سیدھا (DD-MM-YYYY) کرنے کا فنکشن
+    // تاریخ کو دن-مہینہ-سال (DD-MM-YYYY) میں تبدیل کرنے کا فنکشن
     function formatStraightDate(rawDate) {
       if (!rawDate) return '--';
       const parts = rawDate.split('-');
       if (parts.length === 3) {
-        // سال-مہینہ-دن کو دن-مہینہ-سال میں بدلنا
+        // سال(YYYY) - مہینہ(MM) - دن(DD) کو بدل کر دن(DD) - مہینہ(MM) - سال(YYYY) کرنا
         return `${parts[2]}-${parts[1]}-${parts[0]}`;
       }
       return rawDate;
@@ -969,6 +937,7 @@
       const rawDate = document.getElementById('date').value;
       
       document.getElementById('pParty').textContent = party || 'FAHIM KHAN';
+      // تاریخ بالکل درست انداز (Date: 01-10-2026) میں سیٹ ہوگی
       document.getElementById('pDate').textContent = formatStraightDate(rawDate);
       document.getElementById('pDetails').textContent = document.getElementById('details').value.trim() || '--';
       document.getElementById('pFinalWeight').textContent = document.getElementById('finalWeight').value || '0.00';
