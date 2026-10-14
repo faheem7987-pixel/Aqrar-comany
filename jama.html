@@ -10,6 +10,9 @@
   <link rel="icon" type="image/jpeg" href="img.gpj.jpeg">
 
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+  
+  <!-- PDF جنریٹر لائبریری برائے ڈائریکٹ شیئرنگ -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 
   <style>
     :root {
@@ -17,6 +20,7 @@
       --card-bg: #ffffff;
       --brand-blue: #1c325c;
       --btn-jama: #1e6b37;
+      --btn-share: #0284c7;
       --border-color: #cbd5e1;
       --text-dark: #0f172a;
       --text-muted: #64748b;
@@ -256,17 +260,18 @@
 
     .btn-actions-grid {
       display: flex;
+      gap: 10px;
       margin-top: 16px;
     }
 
     .btn-print {
-      width: 100%;
+      flex: 1;
       background: var(--brand-blue);
       color: #ffffff;
       border: none;
       padding: 15px;
       border-radius: 14px;
-      font-size: 1.2rem;
+      font-size: 1.1rem;
       font-weight: 700;
       cursor: pointer;
       display: flex;
@@ -276,28 +281,49 @@
       box-shadow: 0 6px 18px rgba(28, 50, 92, 0.25);
     }
 
-    .btn-print:hover { background: #132442; }
+    .btn-share-pdf {
+      flex: 1;
+      background: var(--btn-jama);
+      color: #ffffff;
+      border: none;
+      padding: 15px;
+      border-radius: 14px;
+      font-size: 1.1rem;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      box-shadow: 0 6px 18px rgba(30, 107, 55, 0.25);
+    }
 
     @media(max-width: 600px) {
       .form-row-half { flex-direction: column; gap: 12px; }
+      .btn-actions-grid { flex-direction: column; }
     }
 
-    /* ==================== صرف ایک A4 پیج پرنٹ لے آؤٹ ==================== */
-    #printReceiptArea { display: none; }
+    /* ==================== A4 پرنٹ اور شیٹ لے آؤٹ ==================== */
+    #printReceiptArea { 
+      display: none; 
+      background: #ffffff;
+      padding: 10px 15px;
+    }
 
     @page {
       size: A4 portrait;
-      margin: 4mm 5mm;
+      margin: 4mm 6mm;
     }
 
     @media print {
-      html, body {
+      body {
         background: #ffffff !important;
         color: #000000 !important;
         padding: 0 !important;
         margin: 0 !important;
-        height: auto !important;
         font-family: 'Poppins', sans-serif !important;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
       }
 
       header, .container, .btn-actions-grid, .unified-media-box {
@@ -309,220 +335,213 @@
         width: 100%;
         padding: 0 !important;
         margin: 0 auto;
-        page-break-after: avoid;
-        page-break-inside: avoid;
       }
+    }
 
-      .sketch-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding-bottom: 2px;
-      }
+    .sketch-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-top: 0px;
+      padding-bottom: 2px;
+    }
 
-      .sketch-left-logo {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        width: 140px;
-      }
+    .sketch-left-logo {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      width: 150px;
+    }
 
-      .sketch-left-logo img {
-        width: 70px;
-        height: 70px;
-        border-radius: 50%;
-        border: 2px solid #000;
-      }
+    .sketch-left-logo img {
+      width: 85px;
+      height: 85px;
+      border-radius: 50%;
+      border: 2px solid #000;
+    }
 
-      .sketch-left-logo span {
-        font-size: 9pt;
-        font-weight: 900;
-        margin-top: 1px;
-        letter-spacing: 0.5px;
-      }
+    .sketch-left-logo span {
+      font-size: 10pt;
+      font-weight: 900;
+      margin-top: 1px;
+      letter-spacing: 0.5px;
+    }
 
-      .sketch-center-party {
-        flex: 1;
-        text-align: center;
-      }
+    .sketch-center-party {
+      flex: 1;
+      text-align: center;
+    }
 
-      .sketch-center-party h1 {
-        font-size: 24pt;
-        font-weight: 900;
-        margin: 0;
-        color: #000;
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
-      }
+    .sketch-center-party h1 {
+      font-size: 28pt;
+      font-weight: 900;
+      margin: 0;
+      color: #000;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
 
-      .sketch-right-receipt {
-        width: 140px;
-        text-align: right;
-      }
+    .sketch-right-receipt {
+      width: 150px;
+      text-align: right;
+    }
 
-      .sketch-right-receipt div {
-        font-size: 13pt;
-        font-weight: 900;
-        line-height: 1.2;
-      }
+    .sketch-right-receipt div {
+      font-size: 14pt;
+      font-weight: 900;
+      line-height: 1.2;
+    }
 
-      .sketch-date-details-bar {
-        display: flex;
-        justify-content: space-between;
-        font-size: 9.5pt;
-        font-weight: 800;
-        padding: 1px 4px 2px;
-        border-bottom: 2px solid #000;
-        margin-bottom: 3px;
-      }
+    .sketch-date-details-bar {
+      display: flex;
+      justify-content: space-between;
+      font-size: 10.5pt;
+      font-weight: 800;
+      padding: 2px 4px 3px;
+      border-bottom: 2px solid #000;
+      margin-bottom: 4px;
+    }
 
-      /* ٹیبل کے ہیڈر کو دوسرے پیج پر دہرانے سے روکنے کے لیے tbody */
-      .sketch-table {
-        width: 100%;
-        border-collapse: collapse;
-        margin-bottom: 3px;
-        page-break-inside: avoid;
-      }
+    .sketch-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 4px;
+    }
 
-      .sketch-table th, .sketch-table td {
-        border: 1.5px solid #000;
-        padding: 3px 5px;
-        font-size: 9pt;
-        text-align: center;
-      }
+    .sketch-table th, .sketch-table td {
+      border: 1.5px solid #000;
+      padding: 4px 6px;
+      font-size: 10pt;
+      text-align: center;
+    }
 
-      .sketch-table th {
-        background: #ececec !important;
-        -webkit-print-color-adjust: exact;
-        font-weight: 900;
-      }
+    .sketch-table th {
+      background: #ececec !important;
+      -webkit-print-color-adjust: exact;
+      font-weight: 900;
+    }
 
-      .sketch-table td {
-        font-weight: 800;
-        height: 22px;
-        font-size: 10pt;
-      }
+    .sketch-table td {
+      font-weight: 800;
+      height: 26px;
+      font-size: 11pt;
+    }
 
-      /* کلیم سیکشن */
-      .claim-title-bar {
-        font-size: 11pt;
-        font-weight: 900;
-        margin: 2px 0 1px;
-        color: #dc2626 !important;
-      }
+    .claim-title-bar {
+      font-size: 12pt;
+      font-weight: 900;
+      margin: 4px 0 2px;
+      color: #dc2626 !important;
+    }
 
-      .sketch-signature-area {
-        padding: 1px 0;
-        margin-bottom: 4px;
-        color: #dc2626 !important;
-        page-break-inside: avoid;
-      }
+    .sketch-signature-area {
+      padding: 2px 0;
+      margin-bottom: 5px;
+      color: #dc2626 !important;
+    }
 
-      .sketch-sig-line-top {
-        display: flex;
-        align-items: center;
-        font-size: 9.5pt;
-        font-weight: 800;
-        padding: 2px 0;
-        margin-bottom: 8px;
-        color: #dc2626 !important;
-      }
+    .sketch-sig-line-top {
+      display: flex;
+      align-items: center;
+      font-size: 10.5pt;
+      font-weight: 800;
+      padding: 3px 0;
+      margin-bottom: 12px;
+      color: #dc2626 !important;
+    }
 
-      .sig-part-date {
-        width: 19%;
-        display: flex;
-        align-items: center;
-        white-space: nowrap;
-      }
+    .sig-part-date {
+      width: 19%;
+      display: flex;
+      align-items: center;
+      white-space: nowrap;
+    }
 
-      .sig-part-owner {
-        width: 40.5%;
-        display: flex;
-        align-items: center;
-        padding-left: 8px;
-        white-space: nowrap;
-      }
+    .sig-part-owner {
+      width: 40.5%;
+      display: flex;
+      align-items: center;
+      padding-left: 8px;
+      white-space: nowrap;
+    }
 
-      .sig-part-party {
-        width: 40.5%;
-        display: flex;
-        align-items: center;
-        padding-left: 8px;
-        white-space: nowrap;
-      }
+    .sig-part-party {
+      width: 40.5%;
+      display: flex;
+      align-items: center;
+      padding-left: 8px;
+      white-space: nowrap;
+    }
 
-      .under-line {
-        display: inline-block;
-        flex: 1;
-        border-bottom: 2px dashed #dc2626;
-        margin-left: 3px;
-        margin-right: 5px;
-        height: 12px;
-      }
+    .under-line {
+      display: inline-block;
+      flex: 1;
+      border-bottom: 2px dashed #dc2626;
+      margin-left: 3px;
+      margin-right: 5px;
+      height: 14px;
+    }
 
-      .sketch-sig-line-bottom {
-        display: flex;
-        align-items: center;
-        width: 100%;
-        font-size: 9.5pt;
-        font-weight: 800;
-        padding-top: 4px;
-        padding-bottom: 2px;
-        color: #dc2626 !important;
-        gap: 6px;
-      }
+    .sketch-sig-line-bottom {
+      display: flex;
+      align-items: center;
+      width: 100%;
+      font-size: 10.5pt;
+      font-weight: 800;
+      padding-top: 6px;
+      padding-bottom: 4px;
+      color: #dc2626 !important;
+      gap: 6px;
+    }
 
-      .claim-field-percent { flex: 1.2; display: flex; align-items: center; white-space: nowrap; }
-      .claim-field-usd { flex: 1.6; display: flex; align-items: center; white-space: nowrap; }
-      .claim-field-rate { flex: 1.2; display: flex; align-items: center; white-space: nowrap; }
-      .claim-field-amount { flex: 2.8; display: flex; align-items: center; white-space: nowrap; }
+    .claim-field-percent { flex: 1.2; display: flex; align-items: center; white-space: nowrap; }
+    .claim-field-usd { flex: 1.6; display: flex; align-items: center; white-space: nowrap; }
+    .claim-field-rate { flex: 1.2; display: flex; align-items: center; white-space: nowrap; }
+    .claim-field-amount { flex: 2.8; display: flex; align-items: center; white-space: nowrap; }
 
-      .p-photos-title {
-        font-weight: 900;
-        font-size: 10pt;
-        margin: 2px 0 2px;
-        border-bottom: 1.5px solid #000;
-        padding-bottom: 1px;
-      }
+    .p-photos-title {
+      font-weight: 900;
+      font-size: 11pt;
+      margin: 4px 0 3px;
+      border-bottom: 1.5px solid #000;
+      padding-bottom: 1px;
+    }
 
-      /* تصاویر کا گرڈ: بالکل ایک صفحے پر فٹ (245px اونچائی) */
-      .sketch-media-grid {
-        display: grid;
-        grid-template-columns: repeat(3, 1fr);
-        gap: 5px;
-        page-break-inside: avoid;
-      }
+    .sketch-media-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 6px;
+    }
 
-      .sketch-media-item {
-        border: 1.5px solid #222;
-        border-radius: 4px;
-        height: 245px;
-        overflow: hidden;
-        background: #fff;
-        page-break-inside: avoid;
-        display: block;
-      }
+    .sketch-media-item {
+      border: 1.5px solid #222;
+      border-radius: 4px;
+      height: 300px;
+      overflow: hidden;
+      background: #fff;
+      page-break-inside: avoid;
+      display: block;
+    }
 
-      .sketch-media-item img {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-        object-position: center;
-        display: block;
-        image-rendering: -webkit-optimize-contrast;
-      }
+    /* تصاویر کے لیے قدرتی اور صاف ستھرا رینڈرنگ رول (کوئی اضافی بلر یا ڈبل رینڈرنگ نہیں ہوگی) */
+    .sketch-media-item img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center;
+      display: block;
+    }
 
-      .sketch-media-item .video-card {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        height: 100%;
-        width: 100%;
-        font-size: 8.5pt;
-        font-weight: bold;
-        text-align: center;
-        background: #f0f0f0;
-      }
+    .sketch-media-item .video-card {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100%;
+      width: 100%;
+      font-size: 9pt;
+      font-weight: bold;
+      text-align: center;
+      background: #f0f0f0;
     }
   </style>
 </head>
@@ -549,7 +568,7 @@
       <!-- 2. Party Name -->
       <div class="form-group-full">
         <label>Party Name *</label>
-        <input type="text" id="party" class="input" placeholder="Enter Party Name" oninput="syncPartyName()">
+        <input type="text" id="party" class="input" placeholder="Enter Party Name (e.g. Fahim Khan)" oninput="syncPartyName()">
       </div>
 
       <!-- 3. Details -->
@@ -617,14 +636,16 @@
         <div id="mediaThumbs" class="thumbs-container"></div>
       </div>
 
+      <!-- ایکشن بٹنز -->
       <div class="btn-actions-grid">
         <button type="button" class="btn-print" onclick="prepareAndPrintReceipt()">🖨️ Print Receipt</button>
+        <button type="button" class="btn-share-pdf" onclick="generateAndSharePDF()">📲 شیئر PDF (واٹس ایپ)</button>
       </div>
 
     </div>
   </div>
 
-  <!-- ==================== A4 پرنٹ شیٹ (صرف 1 صفحہ) ==================== -->
+  <!-- ==================== A4 پرنٹ شیٹ ==================== -->
   <div id="printReceiptArea">
     
     <div class="sketch-header">
@@ -642,7 +663,7 @@
       </div>
     </div>
 
-    <!-- Date & Details Bar -->
+    <!-- Date: DD-MM-YYYY -->
     <div class="sketch-date-details-bar">
       <span>Date: <strong id="pDate">--</strong></span>
       <span>Details: <strong id="pDetails">--</strong></span>
@@ -650,7 +671,7 @@
 
     <!-- Table -->
     <table class="sketch-table">
-      <tbody>
+      <thead>
         <tr>
           <th style="width: 20%;" id="pKhantaHeader1">Khanta 1</th>
           <th style="width: 20%;" id="pKhantaHeader2">Khanta 2</th>
@@ -658,13 +679,18 @@
           <th style="width: 18%;">Nagg</th>
           <th style="width: 20%;">Rate</th>
         </tr>
+      </thead>
+      <tbody>
         <tr>
           <td id="pKhanta1">--</td>
           <td id="pKhanta2">--</td>
-          <td id="pFinalWeight" style="font-size:11pt; background:#fafafa;">--</td>
+          <td id="pFinalWeight" style="font-size:12pt; background:#fafafa;">--</td>
           <td id="pNagg">--</td>
           <td id="pRate">--</td>
         </tr>
+      </tbody>
+
+      <thead>
         <tr>
           <th>Container No</th>
           <th>Seal 1</th>
@@ -672,6 +698,8 @@
           <th>Quality</th>
           <th>Note</th>
         </tr>
+      </thead>
+      <tbody>
         <tr>
           <td id="pContainer">--</td>
           <td id="pSeal1">--</td>
@@ -715,7 +743,7 @@
 
     </div>
 
-    <!-- Photos: بالکل سنگل پیج پر فکسڈ -->
+    <!-- Photos: 6 تصاویر برائے A4 صفحہ -->
     <div class="p-photos-title">Photos:</div>
     <div id="pMediaGrid" class="sketch-media-grid"></div>
 
@@ -785,37 +813,12 @@
       if (!isWeightManuallyEdited) calcAverageWeight();
     }
 
-    // تیز رفتار ہائی کوالٹی پروسیسنگ (بغیر فون ہینگ کیے)
-    function processFastImage(file) {
+    // اصل اور صاف ستھری تصویر بغیر کسی مسخ (Distortion) کے ریڈ کرنا
+    function readCleanFile(file) {
       return new Promise((resolve) => {
         const reader = new FileReader();
         reader.onload = function(e) {
-          const img = new Image();
-          img.onload = function() {
-            const canvas = document.createElement('canvas');
-            const ctx = canvas.getContext('2d');
-
-            // 1800px مکمل HD ریزولوشن جو پرنٹ میں کرسپ آتا ہے اور ہینگ بھی نہیں کرتا
-            const MAX_DIM = 1800;
-            let w = img.width, h = img.height;
-            if (w > h) {
-              if (w > MAX_DIM) { h = Math.round((h * MAX_DIM) / w); w = MAX_DIM; }
-            } else {
-              if (h > MAX_DIM) { w = Math.round((w * MAX_DIM) / h); h = MAX_DIM; }
-            }
-
-            canvas.width = w;
-            canvas.height = h;
-            ctx.imageSmoothingEnabled = true;
-            ctx.imageSmoothingQuality = 'high';
-
-            // ہلکی لکھائی اور نمبروں کو صاف اور گہرا کرنے کا فلٹر
-            ctx.filter = 'contrast(115%) brightness(103%)';
-            ctx.drawImage(img, 0, 0, w, h);
-
-            resolve(canvas.toDataURL('image/jpeg', 0.92));
-          };
-          img.src = e.target.result;
+          resolve(e.target.result);
         };
         reader.readAsDataURL(file);
       });
@@ -828,18 +831,19 @@
       document.getElementById('mediaCountText').textContent = 'Loading images...';
 
       for (const file of files) {
+        const dataUrl = await readCleanFile(file);
         if (file.type.startsWith('video')) {
-          const reader = new FileReader();
-          await new Promise((res) => {
-            reader.onload = function(evt) {
-              mediaList.push({ type: 'video', src: evt.target.result, name: file.name });
-              res();
-            };
-            reader.readAsDataURL(file);
+          mediaList.push({
+            type: 'video',
+            src: dataUrl,
+            name: file.name
           });
         } else {
-          const fastSrc = await processFastImage(file);
-          mediaList.push({ type: 'image', src: fastSrc, name: file.name });
+          mediaList.push({
+            type: 'image',
+            src: dataUrl,
+            name: file.name
+          });
         }
       }
 
@@ -867,7 +871,7 @@
       });
 
       document.getElementById('mediaCountText').textContent = mediaList.length > 0 
-        ? mediaList.length + ' photos ready' 
+        ? mediaList.length + ' files attached' 
         : 'No file selected';
     }
 
@@ -880,7 +884,7 @@
       return rawDate;
     }
 
-    function prepareAndPrintReceipt() {
+    function syncPrintData() {
       const party = document.getElementById('party').value.trim();
       const rawDate = document.getElementById('date').value;
       
@@ -931,9 +935,50 @@
           `;
         }
       });
+    }
 
-      // فوری اور فاسٹ پرنٹ
+    function prepareAndPrintReceipt() {
+      syncPrintData();
       window.print();
+    }
+
+    // پی ڈی ایف شیئرنگ
+    async function generateAndSharePDF() {
+      syncPrintData();
+
+      const printArea = document.getElementById('printReceiptArea');
+      printArea.style.display = 'block';
+
+      const partyName = document.getElementById('party').value.trim() || 'Party';
+      const fileName = `${partyName}_Container_Receipt.pdf`;
+
+      const opt = {
+        margin:       [4, 6, 4, 6],
+        filename:     fileName,
+        image:        { type: 'jpeg', quality: 0.98 },
+        html2canvas:  { scale: 2, useCORS: true, logging: false },
+        jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
+      };
+
+      try {
+        const pdfBlob = await html2pdf().set(opt).from(printArea).output('blob');
+        printArea.style.display = 'none';
+
+        const pdfFile = new File([pdfBlob], fileName, { type: 'application/pdf' });
+
+        if (navigator.canShare && navigator.canShare({ files: [pdfFile] })) {
+          await navigator.share({
+            title: 'Container Receipt',
+            text: `Receipt for ${partyName}`,
+            files: [pdfFile]
+          });
+        } else {
+          html2pdf().set(opt).from(printArea).save();
+        }
+      } catch (err) {
+        printArea.style.display = 'none';
+        html2pdf().set(opt).from(printArea).save();
+      }
     }
   </script>
 </body>
