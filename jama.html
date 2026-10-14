@@ -10,8 +10,6 @@
   <link rel="icon" type="image/jpeg" href="img.gpj.jpeg">
 
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Noto+Nastaliq+Urdu:wght@400;500&display=swap" rel="stylesheet">
-
-  <!-- PDF جنریٹر لائبریری -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 
   <style>
@@ -25,8 +23,6 @@
       --text-muted: #64748b;
       --focus-green-bg: #ecfdf5;
       --focus-green-border: #10b981;
-
-‎      /* پرنٹ کی تحریر کی موٹائی یہاں سے کم/زیادہ کریں (400 = پتلا، 600 = موٹا) */
       --fw-light: 400;
       --fw-medium: 500;
       --fw-strong: 600;
@@ -42,7 +38,6 @@
       direction: ltr;
     }
 
-‎    /* ==================== اسکرین (فارم) ==================== */
     header {
       background: #ffffff;
       border-bottom: 1.5px solid #e2e8f0;
@@ -123,6 +118,45 @@
       text-align: center;
     }
 
+    .names-toggle {
+      width: 100%;
+      background: #eef2ff;
+      color: #3730a3;
+      border: 1.5px dashed #a5b4fc;
+      padding: 10px;
+      border-radius: 12px;
+      font-weight: 600;
+      font-size: 0.9rem;
+      cursor: pointer;
+      margin-bottom: 14px;
+      font-family: inherit;
+    }
+
+    .names-panel {
+      display: none;
+      background: #f8fafc;
+      border: 1.5px solid #e2e8f0;
+      border-radius: 16px;
+      padding: 14px;
+      margin-bottom: 16px;
+    }
+    .names-panel.open { display: block; }
+    .names-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .names-grid label { font-size: 0.75rem; color: var(--text-muted); margin-bottom: 3px; font-weight: 500; }
+    .names-grid .input { padding: 9px 10px; font-size: 0.85rem; }
+    .names-reset {
+      margin-top: 12px;
+      background: #fee2e2;
+      color: #dc2626;
+      border: 1px solid #fecaca;
+      padding: 8px 14px;
+      border-radius: 10px;
+      font-weight: 600;
+      font-size: 0.8rem;
+      cursor: pointer;
+      font-family: inherit;
+    }
+
     .khanta-box { background: #f8fafc; border: 1.5px solid #e2e8f0; border-radius: 18px; padding: 14px; margin: 16px 0; }
     .khanta-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
     .khanta-header strong { font-size: 1rem; color: var(--brand-blue); }
@@ -141,6 +175,7 @@
     }
     .btn-mini-add { background: #0284c7; color: #ffffff; border: none; }
     .btn-mini-del { background: #fee2e2; color: #dc2626; border: 1px solid #fecaca; }
+    .btn-mini-del.locked { visibility: hidden; }
 
     .unified-media-box {
       border: 2px dashed #cbd5e1;
@@ -177,15 +212,29 @@
 
     .thumb-item {
       position: relative;
-      width: 70px;
-      height: 90px;
+      width: 74px;
+      height: 96px;
       border-radius: 8px;
       overflow: hidden;
       border: 1.5px solid #0284c7;
-      background: #000;
+      background: #fff;
+      cursor: pointer;
     }
 
-    .thumb-item img, .thumb-item video { width: 100%; height: 100%; object-fit: cover; }
+    .thumb-item img, .thumb-item video { width: 100%; height: 100%; object-fit: fill; }
+
+    .thumb-edit {
+      position: absolute;
+      left: 3px;
+      bottom: 3px;
+      background: #0284c7;
+      color: #fff;
+      border-radius: 8px;
+      font-size: 11px;
+      line-height: 1;
+      padding: 3px 5px;
+      pointer-events: none;
+    }
 
     .btn-cut-media {
       position: absolute;
@@ -230,7 +279,6 @@
       .btn-actions-grid { flex-direction: column; }
     }
 
-    /* ==================== A4 پرنٹ شیٹ ==================== */
     #printReceiptArea { display: none; background: #ffffff; padding: 4mm 6mm; }
 
     @page { size: A4 portrait; margin: 5mm; }
@@ -251,14 +299,11 @@
     }
 
     .sketch-header { display: flex; justify-content: space-between; align-items: center; padding-bottom: 2px; }
-
     .sketch-left-logo { display: flex; flex-direction: column; align-items: center; width: 140px; }
     .sketch-left-logo img { width: 68px; height: 68px; border-radius: 50%; border: 1px solid #666; }
     .sketch-left-logo span { font-size: 9pt; font-weight: var(--fw-medium); margin-top: 2px; letter-spacing: 0.5px; color: #333; }
-
     .sketch-center-party { flex: 1; text-align: center; }
     .sketch-center-party h1 { font-size: 24pt; font-weight: var(--fw-medium); margin: 0; color: #333; letter-spacing: 0.5px; }
-
     .sketch-right-receipt { width: 140px; text-align: right; }
     .sketch-right-receipt div { font-size: 12.5pt; font-weight: var(--fw-medium); line-height: 1.2; color: #333; }
 
@@ -274,23 +319,22 @@
     }
     .sketch-date-details-bar strong { font-weight: var(--fw-medium); }
 
-    .sketch-table { width: 100%; border-collapse: collapse; margin-bottom: 5px; }
-
+    .sketch-table { width: 100%; border-collapse: collapse; table-layout: fixed; margin-bottom: 5px; }
     .sketch-table th, .sketch-table td {
       border: 0.8px solid #666;
       padding: 4px 6px;
       font-size: 9.5pt;
       text-align: center;
       color: #333;
+      word-wrap: break-word;
+      overflow-wrap: anywhere;
     }
-
     .sketch-table th { background: #f8fafc !important; font-weight: var(--fw-medium); }
     .sketch-table td { font-weight: var(--fw-light); height: 25px; font-size: 10pt; }
+    .sketch-table td.final-weight-cell { font-size: 10.5pt; background: #fafafa; }
 
     .claim-title-bar { font-size: 10.5pt; font-weight: var(--fw-strong); margin: 3px 0 2px; color: #b91c1c !important; }
-
     .sketch-signature-area { padding: 1px 0; margin-bottom: 5px; color: #b91c1c !important; }
-
     .sketch-sig-line-top {
       display: flex;
       align-items: center;
@@ -338,23 +382,30 @@
       color: #333;
     }
 
-‎    /* ہر 6 تصاویر کا الگ گروپ؛ 6 سے زیادہ ہوں تو اگلے صفحے پر */
     .sketch-media-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; margin-bottom: 6px; }
     .photo-page-break { break-before: page; page-break-before: always; }
 
     .sketch-media-item {
       border: 0.8px solid #666;
       border-radius: 4px;
-      height: 285px;
+      height: 80mm;
       overflow: hidden;
       background: #fff;
       break-inside: avoid;
       page-break-inside: avoid;
-      display: block;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
 
-‎    /* سیاہی کم کرنے کا کام اب canvas کرتا ہے (CSS filter پرنٹر میں دھبے بناتا تھا) */
-    .sketch-media-item img { width: 100%; height: 100%; object-fit: cover; object-position: center; display: block; }
+    .sketch-media-item img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      object-position: center;
+      background: #fff;
+      display: block;
+    }
 
     .sketch-media-item .video-card {
       display: flex;
@@ -367,6 +418,36 @@
       text-align: center;
       background: #f8fafc;
     }
+
+    .pe-overlay {
+      position: fixed; inset: 0; z-index: 1100; background: rgba(15, 23, 42, 0.78);
+      display: flex; align-items: center; justify-content: center; padding: 12px; overflow-y: auto;
+    }
+    .pe-overlay[hidden] { display: none; }
+    .pe-card {
+      background: #fff; border-radius: 20px; padding: 16px; width: 100%; max-width: 400px;
+      display: flex; flex-direction: column; gap: 12px; max-height: 100%; overflow-y: auto;
+    }
+    .pe-title { font-weight: 700; font-size: 1.05rem; color: var(--brand-blue); text-align: center; }
+    .pe-frame {
+      position: relative; width: min(100%, 300px); aspect-ratio: 62 / 80; margin: 0 auto;
+      overflow: hidden; background: #fff; border: 2px solid #0284c7; border-radius: 6px;
+      touch-action: none; cursor: grab; user-select: none; -webkit-user-select: none;
+    }
+    .pe-frame img { position: absolute; max-width: none; pointer-events: none; -webkit-user-drag: none; }
+    .pe-hint { font-size: 0.78rem; color: var(--text-muted); text-align: center; }
+    .pe-zoom-row { display: flex; align-items: center; gap: 8px; }
+    .pe-zoom-row input[type="range"] { flex: 1; min-width: 0; }
+    .pe-zoom-val { min-width: 46px; text-align: right; font-weight: 600; font-size: 0.85rem; }
+    .pe-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+    .pe-btn {
+      flex: 1; min-width: 0; border: 1.5px solid var(--border-color); background: #f8fafc; color: #1e293b;
+      border-radius: 12px; padding: 10px 8px; font-size: 0.85rem; font-weight: 600; cursor: pointer; font-family: inherit;
+    }
+    .pe-zoom-row .pe-btn { flex: 0 0 40px; padding: 8px 0; font-size: 1.1rem; }
+    .pe-save { background: #1e6b37; border-color: #1e6b37; color: #fff; }
+    .pe-cancel { background: #fee2e2; border-color: #fecaca; color: #dc2626; }
+    @media print { .pe-overlay { display: none !important; } }
   </style>
 </head>
 <body>
@@ -382,82 +463,78 @@
   <div class="container">
     <div class="form-card">
 
-      <!-- 1. Date -->
+      <button type="button" class="names-toggle" onclick="toggleNamesPanel()">✏️ فیلڈ کے نام تبدیل کریں (Edit Field Names)</button>
+      <div id="namesPanel" class="names-panel">
+        <div id="namesGrid" class="names-grid"></div>
+        <button type="button" class="names-reset" onclick="resetLabels()">↩ اصل نام واپس لائیں</button>
+      </div>
+
       <div class="form-group-full">
-        <label>Date *</label>
+        <label data-label="date" data-req="1">Date *</label>
         <input type="date" id="date">
       </div>
 
-      <!-- 2. Party Name -->
       <div class="form-group-full">
-        <label>Party Name *</label>
+        <label data-label="party" data-req="1">Party Name *</label>
         <input type="text" id="party" class="input" placeholder="Enter Party Name (e.g. Fahim Khan)" oninput="syncPartyName()">
       </div>
 
-      <!-- 3. Details -->
       <div class="form-group-full">
-        <label>Details / Description</label>
+        <label data-label="details">Details</label>
         <input type="text" id="details" class="input" placeholder="Material details, driver, vehicle no">
       </div>
 
-      <!-- 4. Khanta Section -->
       <div class="khanta-box">
         <div class="khanta-header">
-          <strong>Khanta Section</strong>
-          <small style="color:var(--text-muted); font-size:0.75rem;">(Auto average calculation)</small>
+          <strong data-label="khantaTitle">Khanta Section</strong>
+          <small style="color:var(--text-muted); font-size:0.75rem;">(کم از کم 2 • اوسط خودکار)</small>
         </div>
         <div id="khantaContainer"></div>
       </div>
 
-      <!-- 5. Final Weight & Nagg -->
       <div class="form-row-half">
         <div class="col-half" style="flex: 1.8;">
-          <label>Final Weight *</label>
+          <label data-label="finalWeight" data-req="1">Final Weight *</label>
           <input type="number" step="any" id="finalWeight" class="input highlight-weight" placeholder="0.00" oninput="userManualEditWeight()">
         </div>
         <div class="col-half" style="flex: 1;">
-          <label>Nagg (Pcs)</label>
+          <label data-label="nagg">Nagg</label>
           <input type="text" id="nagg" class="input" placeholder="Pieces">
         </div>
       </div>
 
-      <!-- 6. Rate & Quality -->
       <div class="form-row-half">
         <div class="col-half">
-          <label>Rate</label>
+          <label data-label="rate">Rate</label>
           <input type="number" step="any" id="rate" class="input" placeholder="0">
         </div>
         <div class="col-half">
-          <label>Quality</label>
+          <label data-label="quality">Quality</label>
           <input type="text" id="quality" class="input" placeholder="Quality Grade">
         </div>
       </div>
 
-      <!-- 7. Container No -->
       <div class="form-group-full">
-        <label>Container No</label>
+        <label data-label="containerNo">Container No</label>
         <input type="text" id="containerNo" class="input" placeholder="e.g. MSCU-4920">
       </div>
 
-      <!-- 8. Seal 1 & Seal 2 -->
       <div class="form-row-half">
         <div class="col-half">
-          <label>Seal 1</label>
+          <label data-label="seal1">Seal 1</label>
           <input type="text" id="seal1" class="input" placeholder="Seal 1">
         </div>
         <div class="col-half">
-          <label>Seal 2</label>
+          <label data-label="seal2">Seal 2</label>
           <input type="text" id="seal2" class="input" placeholder="Seal 2">
         </div>
       </div>
 
-      <!-- Media Upload -->
       <div class="unified-media-box">
         <input type="file" id="mediaInput" accept="image/*,video/*" multiple style="display:none;" onchange="handleMediaUpload(event)">
         <label for="mediaInput" class="media-btn-label">📷 / 🎥 Select Photos & Videos</label>
         <div id="mediaCountText" style="font-size:0.85rem; color:var(--text-muted); margin-top:6px;">No file selected</div>
 
-‎        <!-- موٹے/چکنے کاغذ کے لیے تصویر کی سیاہی کم کرنے کا آپشن -->
         <div class="ink-row">
           <label for="inkLevel">Photo Ink Level (موٹے / چکنے کاغذ کے لیے)</label>
           <select id="inkLevel" class="input">
@@ -471,7 +548,6 @@
         <div id="mediaThumbs" class="thumbs-container"></div>
       </div>
 
-‎      <!-- ایکشن بٹنز -->
       <div class="btn-actions-grid">
         <button type="button" class="btn-print" onclick="prepareAndPrintReceipt()">🖨️ Print Receipt</button>
         <button type="button" class="btn-share-pdf" onclick="generateAndSharePDF()">📲 شیئر PDF (واٹس ایپ)</button>
@@ -480,7 +556,6 @@
     </div>
   </div>
 
-  <!-- ==================== A4 پرنٹ شیٹ ==================== -->
   <div id="printReceiptArea">
 
     <div class="sketch-header">
@@ -498,54 +573,13 @@
       </div>
     </div>
 
-    <!-- Date: DD-MM-YYYY -->
     <div class="sketch-date-details-bar">
-      <span>Date: <strong id="pDate">--</strong></span>
-      <span>Details: <strong id="pDetails">--</strong></span>
+      <span><span id="pDateLabel">Date</span>: <strong id="pDate">--</strong></span>
+      <span><span id="pDetailsLabel">Details</span>: <strong id="pDetails">--</strong></span>
     </div>
 
-    <!-- Table -->
-    <table class="sketch-table">
-      <thead>
-        <tr>
-          <th style="width: 20%;" id="pKhantaHeader1">Khanta 1</th>
-          <th style="width: 20%;" id="pKhantaHeader2">Khanta 2</th>
-          <th style="width: 22%;">Final Weight</th>
-          <th style="width: 18%;">Nagg</th>
-          <th style="width: 20%;">Rate</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td id="pKhanta1">--</td>
-          <td id="pKhanta2">--</td>
-          <td id="pFinalWeight" style="font-size:10.5pt; background:#fafafa;">--</td>
-          <td id="pNagg">--</td>
-          <td id="pRate">--</td>
-        </tr>
-      </tbody>
+    <table class="sketch-table" id="pMainTable"></table>
 
-      <thead>
-        <tr>
-          <th>Container No</th>
-          <th>Seal 1</th>
-          <th>Seal 2</th>
-          <th>Quality</th>
-          <th>Note</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td id="pContainer">--</td>
-          <td id="pSeal1">--</td>
-          <td id="pSeal2">--</td>
-          <td id="pQuality">--</td>
-          <td>-</td>
-        </tr>
-      </tbody>
-    </table>
-
-    <!-- Claim Section -->
     <div class="claim-title-bar">Claim</div>
     <div class="sketch-signature-area">
 
@@ -564,7 +598,6 @@
 
     </div>
 
-    <!-- Photos: ہر صفحے پر 6 تصاویر -->
     <div class="p-photos-title">Photos:</div>
     <div id="pMediaWrap"></div>
 
@@ -587,31 +620,108 @@
       document.getElementById('pParty').textContent = partyVal || 'FAHIM KHAN';
     }
 
+    function esc(text) {
+      return String(text).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+    }
+
     let mediaList = [];
     let isWeightManuallyEdited = false;
 
-    /* ---------- Khanta ---------- */
+    const DEFAULT_LABELS = {
+      date: 'Date',
+      party: 'Party Name',
+      details: 'Details',
+      khantaTitle: 'Khanta Section',
+      finalWeight: 'Final Weight',
+      nagg: 'Nagg',
+      rate: 'Rate',
+      quality: 'Quality',
+      containerNo: 'Container No',
+      seal1: 'Seal 1',
+      seal2: 'Seal 2',
+      note: 'Note'
+    };
+    const LABELS_KEY = 'aqrarFieldLabels';
+    let labels = { ...DEFAULT_LABELS };
+
+    function loadLabels() {
+      try {
+        const saved = JSON.parse(localStorage.getItem(LABELS_KEY) || '{}');
+        labels = { ...DEFAULT_LABELS, ...saved };
+      } catch (e) {
+        labels = { ...DEFAULT_LABELS };
+      }
+    }
+
+    function saveLabels() {
+      try { localStorage.setItem(LABELS_KEY, JSON.stringify(labels)); } catch (e) {}
+    }
+
+    function applyLabels() {
+      document.querySelectorAll('[data-label]').forEach(el => {
+        const text = labels[el.dataset.label] || DEFAULT_LABELS[el.dataset.label];
+        el.textContent = text + (el.dataset.req ? ' *' : '');
+      });
+    }
+
+    function buildNamesPanel() {
+      const grid = document.getElementById('namesGrid');
+      grid.innerHTML = '';
+      Object.keys(DEFAULT_LABELS).forEach(key => {
+        const wrap = document.createElement('div');
+        wrap.innerHTML = `
+          <label>${esc(DEFAULT_LABELS[key])}</label>
+          <input type="text" class="input" data-key="${key}" value="${esc(labels[key])}">
+        `;
+        wrap.querySelector('input').addEventListener('input', e => {
+          labels[key] = e.target.value.trim() || DEFAULT_LABELS[key];
+          saveLabels();
+          applyLabels();
+        });
+        grid.appendChild(wrap);
+      });
+    }
+
+    function toggleNamesPanel() {
+      document.getElementById('namesPanel').classList.toggle('open');
+    }
+
+    function resetLabels() {
+      labels = { ...DEFAULT_LABELS };
+      saveLabels();
+      buildNamesPanel();
+      applyLabels();
+    }
+
+    loadLabels();
+    buildNamesPanel();
+    applyLabels();
+
+    const MIN_KHANTA = 2;
+
     function addKhanta(name = '', weight = '') {
       const c = document.getElementById('khantaContainer');
+      const index = c.children.length;
       const div = document.createElement('div');
       div.className = 'khanta-row';
       div.innerHTML = `
-        <input type="text" class="input k-name" placeholder="Khanta Name" value="${name}">
-        <input type="number" step="any" class="input k-weight" placeholder="Weight" value="${weight}" oninput="calcAverageWeight()">
+        <input type="text" class="input k-name" placeholder="Khanta Name" value="${esc(name || 'Khanta ' + (index + 1))}">
+        <input type="number" step="any" class="input k-weight" placeholder="Weight" value="${esc(weight)}" oninput="calcAverageWeight()">
         <button type="button" class="btn-mini-add" onclick="addKhanta()">+</button>
-        <button type="button" class="btn-mini-del" onclick="removeRow(this)">&times;</button>
+        <button type="button" class="btn-mini-del ${index < MIN_KHANTA ? 'locked' : ''}" onclick="removeRow(this)">&times;</button>
       `;
       c.appendChild(div);
     }
 
     function removeRow(btn) {
-      const rows = document.querySelectorAll('.khanta-row');
-      if (rows.length > 1) {
-        btn.parentElement.remove();
-        calcAverageWeight();
-      } else {
-        alert('At least one Khanta row is required!');
+      const rows = Array.from(document.querySelectorAll('.khanta-row'));
+      const row = btn.parentElement;
+      if (rows.indexOf(row) < MIN_KHANTA) {
+        alert('پہلے 2 کانٹے لازمی ہیں!');
+        return;
       }
+      row.remove();
+      calcAverageWeight();
     }
 
     addKhanta('Khanta 1');
@@ -632,7 +742,6 @@
       if (!isWeightManuallyEdited) calcAverageWeight();
     }
 
-‎    /* ---------- فائلیں پڑھنا ---------- */
     function readFileAsDataURL(file) {
       return new Promise(resolve => {
         const reader = new FileReader();
@@ -650,13 +759,12 @@
       });
     }
 
-‎    // تصویر کو 1400px تک چھوٹا کر کے سفید پس منظر پر JPEG بناتا ہے
     async function shrinkImage(file) {
       const raw = await readFileAsDataURL(file);
       const img = await loadImage(raw);
       if (!img) return raw;
 
-      const ratio = Math.min(1, 1400 / Math.max(img.naturalWidth, img.naturalHeight));
+      const ratio = Math.min(1, 2000 / Math.max(img.naturalWidth, img.naturalHeight));
       const w = Math.round(img.naturalWidth * ratio);
       const h = Math.round(img.naturalHeight * ratio);
 
@@ -670,7 +778,6 @@
       return canvas.toDataURL('image/jpeg', 0.88);
     }
 
-‎    // سیاہی کم کرنا: ہر پکسل کو سفید کی طرف amount (0 سے 1) کے برابر ہلکا کرتا ہے
     async function lightenForPrint(src, amount) {
       if (!amount) return src;
       const img = await loadImage(src);
@@ -695,7 +802,6 @@
       return canvas.toDataURL('image/jpeg', 0.9);
     }
 
-‎    /* ---------- میڈیا ---------- */
     async function handleMediaUpload(e) {
       const files = Array.from(e.target.files);
       if (!files.length) return;
@@ -706,7 +812,8 @@
         if (file.type.startsWith('video')) {
           mediaList.push({ type: 'video', src: await readFileAsDataURL(file), name: file.name });
         } else {
-          mediaList.push({ type: 'image', src: await shrinkImage(file), name: file.name });
+          const imgSrc = await shrinkImage(file);
+          mediaList.push({ type: 'image', src: imgSrc, img: await loadImage(imgSrc), view: { z: 1, x: 0, y: 0 }, name: file.name });
         }
       }
 
@@ -728,8 +835,15 @@
         div.className = 'thumb-item';
         div.innerHTML = `
           <button type="button" class="btn-cut-media" onclick="removeMediaItem(${index})">&times;</button>
-          ${item.type === 'image' ? `<img src="${item.src}">` : `<video src="${item.src}"></video>`}
+          ${item.type === 'image' ? `<img src="${renderCrop(item, 222, 288)}">` : `<video src="${item.src}"></video>`}
         `;
+        if (item.type === 'image') {
+          div.insertAdjacentHTML('beforeend', '<span class="thumb-edit">✎ ایڈجسٹ</span>');
+          div.addEventListener('click', e => {
+            if (e.target.closest('.btn-cut-media')) return;
+            openPhotoEditor(index);
+          });
+        }
         container.appendChild(div);
       });
 
@@ -738,11 +852,28 @@
         : 'No file selected';
     }
 
-‎    /* ---------- پرنٹ ڈیٹا ---------- */
     function formatStraightDate(rawDate) {
       if (!rawDate) return '--';
       const parts = rawDate.split('-');
       return parts.length === 3 ? `${parts[2]}-${parts[1]}-${parts[0]}` : rawDate;
+    }
+
+    function buildTableBlock(cells) {
+      const rowCount = Math.ceil(cells.length / 5);
+      const perRow = Math.ceil(cells.length / rowCount);
+      let html = '';
+
+      for (let i = 0; i < cells.length; i += perRow) {
+        const chunk = cells.slice(i, i + perRow);
+        const base = Math.floor(10 / chunk.length);
+        const extra = 10 - base * chunk.length;
+        const span = idx => base + (idx < extra ? 1 : 0);
+
+        html += '<tr>' + chunk.map((c, idx) => `<th colspan="${span(idx)}">${esc(c.head)}</th>`).join('') + '</tr>';
+        html += '<tr>' + chunk.map((c, idx) =>
+          `<td colspan="${span(idx)}"${c.cls ? ` class="${c.cls}"` : ''}>${esc(c.value)}</td>`).join('') + '</tr>';
+      }
+      return html;
     }
 
     async function syncPrintData() {
@@ -750,25 +881,34 @@
       const set = (id, text) => { document.getElementById(id).textContent = text; };
 
       set('pParty', val('party') || 'FAHIM KHAN');
+      set('pDateLabel', labels.date);
+      set('pDetailsLabel', labels.details);
       set('pDate', formatStraightDate(document.getElementById('date').value));
       set('pDetails', val('details') || '--');
-      set('pFinalWeight', document.getElementById('finalWeight').value || '0.00');
-      set('pRate', document.getElementById('rate').value || '--');
-      set('pNagg', val('nagg') || '--');
-      set('pQuality', val('quality') || '--');
-      set('pContainer', val('containerNo') || '--');
-      set('pSeal1', val('seal1') || '--');
-      set('pSeal2', val('seal2') || '--');
 
-      const rows = document.querySelectorAll('.khanta-row');
-      [0, 1].forEach(i => {
-        const n = i + 1;
-        const row = rows[i];
-        set('pKhantaHeader' + n, (row && row.querySelector('.k-name').value.trim()) || 'Khanta ' + n);
-        set('pKhanta' + n, (row && row.querySelector('.k-weight').value.trim()) || '--');
-      });
+      const khantaCells = Array.from(document.querySelectorAll('.khanta-row')).map((row, i) => ({
+        head: row.querySelector('.k-name').value.trim() || 'Khanta ' + (i + 1),
+        value: row.querySelector('.k-weight').value.trim() || '--'
+      }));
 
-‎      // تصاویر: سیاہی کم کر کے، 6 کے گروپ میں
+      const topCells = khantaCells.concat([
+        { head: labels.finalWeight, value: document.getElementById('finalWeight').value || '0.00', cls: 'final-weight-cell' },
+        { head: labels.nagg, value: val('nagg') || '--' },
+        { head: labels.rate, value: document.getElementById('rate').value || '--' }
+      ]);
+
+      const bottomCells = [
+        { head: labels.containerNo, value: val('containerNo') || '--' },
+        { head: labels.seal1, value: val('seal1') || '--' },
+        { head: labels.seal2, value: val('seal2') || '--' },
+        { head: labels.quality, value: val('quality') || '--' },
+        { head: labels.note, value: '-' }
+      ];
+
+      document.getElementById('pMainTable').innerHTML =
+        '<colgroup>' + '<col style="width:10%">'.repeat(10) + '</colgroup>' +
+        buildTableBlock(topCells) + buildTableBlock(bottomCells);
+
       const amount = parseFloat(document.getElementById('inkLevel').value) || 0;
       const wrap = document.getElementById('pMediaWrap');
       wrap.innerHTML = '';
@@ -776,7 +916,7 @@
       const items = [];
       for (const item of mediaList) {
         items.push(item.type === 'image'
-          ? { ...item, printSrc: await lightenForPrint(item.src, amount) }
+          ? { ...item, printSrc: await lightenForPrint(renderCrop(item, 930, 1200), amount) }
           : item);
       }
 
@@ -788,7 +928,7 @@
           const cell = document.createElement('div');
           cell.className = 'sketch-media-item';
           cell.innerHTML = item.type === 'video'
-            ? `<div class="video-card">🎥 Video Record<br>(${item.name.substring(0, 16)})</div>`
+            ? `<div class="video-card">🎥 Video Record<br>(${esc(item.name.substring(0, 16))})</div>`
             : `<img src="${item.printSrc}">`;
           grid.appendChild(cell);
         });
@@ -796,7 +936,6 @@
         wrap.appendChild(grid);
       }
 
-‎      // تمام تصاویر لوڈ ہونے تک انتظار
       await Promise.all(Array.from(wrap.querySelectorAll('img')).map(im =>
         im.complete ? Promise.resolve() : new Promise(r => { im.onload = im.onerror = r; })));
     }
@@ -844,6 +983,160 @@
         html2pdf().set(opt).from(printArea).save();
       }
     }
+  </script>
+
+  <div id="pePanel" class="pe-overlay" hidden>
+    <div class="pe-card">
+      <div class="pe-title">تصویر ایڈجسٹ کریں</div>
+      <div id="peFrame" class="pe-frame"><img id="peImg" alt=""></div>
+      <div class="pe-hint">انگلی سے کھسکائیں • دو انگلیوں سے زوم کریں • یہ فریم پرنٹ کے خانے جتنا ہے</div>
+      <div class="pe-zoom-row">
+        <button type="button" class="pe-btn" onclick="peStep(-0.1)">−</button>
+        <input type="range" id="peZoom" min="0.5" max="5" step="0.01" value="1" oninput="peSetZoom(parseFloat(this.value))">
+        <button type="button" class="pe-btn" onclick="peStep(0.1)">+</button>
+        <span id="peZoomVal" class="pe-zoom-val">100%</span>
+      </div>
+      <div class="pe-actions">
+        <button type="button" class="pe-btn" onclick="peFit()">پوری تصویر</button>
+        <button type="button" class="pe-btn" onclick="peFill()">فریم بھریں</button>
+        <button type="button" class="pe-btn" onclick="peReset()">ری سیٹ</button>
+      </div>
+      <div class="pe-actions">
+        <button type="button" class="pe-btn pe-cancel" onclick="peClose(false)">منسوخ</button>
+        <button type="button" class="pe-btn pe-save" onclick="peClose(true)">محفوظ کریں</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function renderCrop(item, outW, outH) {
+      if (!item.img) return item.src;
+      const v = item.view || { z: 1, x: 0, y: 0 };
+      const c = document.createElement('canvas');
+      c.width = outW;
+      c.height = outH;
+      const g = c.getContext('2d');
+      g.fillStyle = '#ffffff';
+      g.fillRect(0, 0, outW, outH);
+      g.imageSmoothingQuality = 'high';
+      const iw = item.img.naturalWidth, ih = item.img.naturalHeight;
+      const s = Math.min(outW / iw, outH / ih) * v.z;
+      const dw = iw * s, dh = ih * s;
+      g.drawImage(item.img, outW / 2 + v.x * outW - dw / 2, outH / 2 + v.y * outH - dh / 2, dw, dh);
+      return c.toDataURL('image/jpeg', 0.9);
+    }
+
+    let peIndex = -1;
+    let peView = { z: 1, x: 0, y: 0 };
+    const peClampNum = (n, lo, hi) => Math.min(hi, Math.max(lo, n));
+
+    function peDims() {
+      const fr = document.getElementById('peFrame');
+      const item = mediaList[peIndex];
+      const fw = fr.clientWidth, fh = fr.clientHeight;
+      const iw = item.img.naturalWidth, ih = item.img.naturalHeight;
+      const base = Math.min(fw / iw, fh / ih);
+      return { fw, fh, iw, ih, base };
+    }
+
+    function peLimitPan() {
+      const d = peDims();
+      const dw = d.iw * d.base * peView.z, dh = d.ih * d.base * peView.z;
+      const mx = Math.max(0, (dw - d.fw) / 2) / d.fw;
+      const my = Math.max(0, (dh - d.fh) / 2) / d.fh;
+      peView.x = peClampNum(peView.x, -mx, mx);
+      peView.y = peClampNum(peView.y, -my, my);
+    }
+
+    function peLayout() {
+      if (peIndex < 0 || !mediaList[peIndex]) return;
+      const d = peDims();
+      const dw = d.iw * d.base * peView.z, dh = d.ih * d.base * peView.z;
+      const im = document.getElementById('peImg');
+      im.style.width = dw + 'px';
+      im.style.height = dh + 'px';
+      im.style.left = (d.fw / 2 + peView.x * d.fw - dw / 2) + 'px';
+      im.style.top = (d.fh / 2 + peView.y * d.fh - dh / 2) + 'px';
+      document.getElementById('peZoom').value = peView.z;
+      document.getElementById('peZoomVal').textContent = Math.round(peView.z * 100) + '%';
+    }
+
+    function peSetZoom(z) {
+      peView.z = peClampNum(z, 0.5, 5);
+      peLimitPan();
+      peLayout();
+    }
+
+    function peStep(delta) { peSetZoom(peView.z + delta); }
+    function peFit() { peView = { z: 1, x: 0, y: 0 }; peLayout(); }
+    function peReset() { peFit(); }
+    function peFill() {
+      const d = peDims();
+      peView = { z: Math.max(d.fw / d.iw, d.fh / d.ih) / d.base, x: 0, y: 0 };
+      peLayout();
+    }
+
+    function openPhotoEditor(index) {
+      const item = mediaList[index];
+      if (!item || item.type !== 'image' || !item.img) return;
+      peIndex = index;
+      peView = { ...(item.view || { z: 1, x: 0, y: 0 }) };
+      document.getElementById('peImg').src = item.src;
+      document.getElementById('pePanel').hidden = false;
+      peLayout();
+    }
+
+    function peClose(save) {
+      if (save && peIndex >= 0 && mediaList[peIndex]) {
+        mediaList[peIndex].view = { ...peView };
+        renderMediaThumbs();
+      }
+      peIndex = -1;
+      document.getElementById('pePanel').hidden = true;
+    }
+
+    (function () {
+      const fr = document.getElementById('peFrame');
+      const pts = new Map();
+      let startDist = 0, startZ = 1;
+      const dist = () => {
+        const a = Array.from(pts.values());
+        return Math.hypot(a[0].x - a[1].x, a[0].y - a[1].y) || 1;
+      };
+
+      fr.addEventListener('pointerdown', e => {
+        try { fr.setPointerCapture(e.pointerId); } catch (err) {}
+        pts.set(e.pointerId, { x: e.clientX, y: e.clientY });
+        if (pts.size === 2) { startDist = dist(); startZ = peView.z; }
+      });
+
+      fr.addEventListener('pointermove', e => {
+        const p = pts.get(e.pointerId);
+        if (!p || peIndex < 0) return;
+        const fw = fr.clientWidth, fh = fr.clientHeight;
+        if (pts.size === 1) {
+          peView.x += (e.clientX - p.x) / fw;
+          peView.y += (e.clientY - p.y) / fh;
+        }
+        p.x = e.clientX;
+        p.y = e.clientY;
+        if (pts.size === 2) peView.z = peClampNum(startZ * dist() / startDist, 0.5, 5);
+        peLimitPan();
+        peLayout();
+      });
+
+      const end = e => { pts.delete(e.pointerId); };
+      fr.addEventListener('pointerup', end);
+      fr.addEventListener('pointercancel', end);
+
+      fr.addEventListener('wheel', e => {
+        e.preventDefault();
+        peSetZoom(peView.z * (e.deltaY < 0 ? 1.08 : 0.92));
+      }, { passive: false });
+
+      window.addEventListener('resize', peLayout);
+      document.addEventListener('keydown', e => { if (e.key === 'Escape' && peIndex >= 0) peClose(false); });
+    })();
   </script>
 </body>
 </html>
