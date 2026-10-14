@@ -9,7 +9,7 @@
   <link rel="apple-touch-icon" sizes="180x180" href="img.gpj.jpeg">
   <link rel="icon" type="image/jpeg" href="img.gpj.jpeg">
 
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800;900&display=swap" rel="stylesheet">
   
   <!-- PDF جنریٹر لائبریری -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
@@ -132,7 +132,7 @@
       background: #f0fdf4;
       border-color: #86efac;
       color: #166534;
-      font-weight: 700;
+      font-weight: 800;
       font-size: 1.25rem;
       text-align: center;
     }
@@ -307,12 +307,12 @@
     #printReceiptArea { 
       display: none; 
       background: #ffffff;
-      padding: 4mm 6mm;
+      padding: 10px 14px;
     }
 
     @page {
       size: A4 portrait;
-      margin: 4mm 5mm;
+      margin: 3mm 5mm;
     }
 
     @media print {
@@ -342,26 +342,27 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding-bottom: 2px;
+      padding-top: 0;
+      padding-bottom: 4px;
     }
 
     .sketch-left-logo {
       display: flex;
       flex-direction: column;
       align-items: center;
-      width: 130px;
+      width: 150px;
     }
 
     .sketch-left-logo img {
-      width: 65px;
-      height: 65px;
+      width: 80px;
+      height: 80px;
       border-radius: 50%;
-      border: 1.2px solid #000;
+      border: 1.5px solid #000;
     }
 
     .sketch-left-logo span {
-      font-size: 9pt;
-      font-weight: 600;
+      font-size: 10pt;
+      font-weight: 700;
       margin-top: 2px;
       letter-spacing: 0.5px;
       color: #000;
@@ -373,21 +374,22 @@
     }
 
     .sketch-center-party h1 {
-      font-size: 22pt;
-      font-weight: 700;
+      font-size: 26pt;
+      font-weight: 800;
       margin: 0;
       color: #000;
+      text-transform: uppercase;
       letter-spacing: 0.5px;
     }
 
     .sketch-right-receipt {
-      width: 130px;
+      width: 150px;
       text-align: right;
     }
 
     .sketch-right-receipt div {
-      font-size: 12pt;
-      font-weight: 600;
+      font-size: 13.5pt;
+      font-weight: 700;
       line-height: 1.2;
       color: #000;
     }
@@ -395,59 +397,61 @@
     .sketch-date-details-bar {
       display: flex;
       justify-content: space-between;
-      font-size: 9.5pt;
-      font-weight: 600;
-      padding: 3px 2px;
-      border-bottom: 1.2px solid #000;
-      margin-bottom: 4px;
+      font-size: 10.5pt;
+      font-weight: 700;
+      padding: 4px 4px 5px;
+      border-bottom: 2px solid #000;
+      margin-bottom: 6px;
       color: #000;
     }
 
+    /* کھلا کھلا اور واضح ٹیبل */
     .sketch-table {
       width: 100%;
       border-collapse: collapse;
-      margin-bottom: 4px;
+      margin-bottom: 6px;
     }
 
     .sketch-table th, .sketch-table td {
-      border: 1px solid #000;
-      padding: 3px 5px;
-      font-size: 9pt;
+      border: 1.5px solid #000;
+      padding: 6px 8px;
+      font-size: 10.5pt;
       text-align: center;
       color: #000;
     }
 
     .sketch-table th {
       background: #f1f5f9 !important;
-      font-weight: 600;
+      font-weight: 700;
     }
 
     .sketch-table td {
-      font-weight: 500;
-      height: 22px;
-      font-size: 9.5pt;
+      font-weight: 600;
+      height: 28px;
+      font-size: 11pt;
     }
 
     .claim-title-bar {
-      font-size: 10pt;
-      font-weight: 700;
-      margin: 3px 0 1px;
-      color: #b91c1c !important;
+      font-size: 11.5pt;
+      font-weight: 800;
+      margin: 4px 0 3px;
+      color: #dc2626 !important;
     }
 
     .sketch-signature-area {
-      padding: 1px 0;
-      margin-bottom: 4px;
+      padding: 2px 0;
+      margin-bottom: 6px;
+      color: #dc2626 !important;
     }
 
     .sketch-sig-line-top {
       display: flex;
       align-items: center;
-      font-size: 9pt;
-      font-weight: 600;
-      padding: 2px 0;
-      margin-bottom: 6px;
-      color: #b91c1c !important;
+      font-size: 10pt;
+      font-weight: 700;
+      padding: 3px 0;
+      margin-bottom: 10px;
+      color: #dc2626 !important;
     }
 
     .sig-part-date { width: 19%; display: flex; align-items: center; white-space: nowrap; }
@@ -457,21 +461,21 @@
     .under-line {
       display: inline-block;
       flex: 1;
-      border-bottom: 1.2px dashed #b91c1c;
+      border-bottom: 2px dashed #dc2626;
       margin-left: 3px;
       margin-right: 5px;
-      height: 10px;
+      height: 12px;
     }
 
     .sketch-sig-line-bottom {
       display: flex;
       align-items: center;
       width: 100%;
-      font-size: 9pt;
-      font-weight: 600;
-      padding-top: 2px;
-      padding-bottom: 3px;
-      color: #b91c1c !important;
+      font-size: 10pt;
+      font-weight: 700;
+      padding-top: 4px;
+      padding-bottom: 4px;
+      color: #dc2626 !important;
       gap: 6px;
     }
 
@@ -481,11 +485,11 @@
     .claim-field-amount { flex: 2.8; display: flex; align-items: center; white-space: nowrap; }
 
     .p-photos-title {
-      font-weight: 600;
-      font-size: 9.5pt;
-      margin: 3px 0 2px;
-      border-bottom: 1.2px solid #000;
-      padding-bottom: 1px;
+      font-weight: 800;
+      font-size: 11pt;
+      margin: 5px 0 4px;
+      border-bottom: 1.5px solid #000;
+      padding-bottom: 2px;
       color: #000;
     }
 
@@ -495,25 +499,23 @@
       gap: 6px;
     }
 
-    /* تصاویر کے لیے متوازن فریم تاکہ موٹے پیپر پر 6 تصویریں ایک ہی صفحے پر پرفیکٹ آئیں */
+    /* اصل اور بھرپور 300px فریم سائز */
     .sketch-media-item {
-      border: 1px solid #222;
-      border-radius: 3px;
-      height: 275px;
+      border: 1.5px solid #222;
+      border-radius: 4px;
+      height: 300px;
       overflow: hidden;
-      background: #ffffff;
+      background: #fff;
       page-break-inside: avoid;
-      display: flex;
-      align-items: center;
-      justify-content: center;
+      display: block;
     }
 
-    /* بغیر کسی کھچاؤ یا زبردستی فلٹر کے بالکل اوریجنل ہائی کوالٹی */
+    /* اصل تناسب کے ساتھ پوری بھرپور اور شفاف تصویر */
     .sketch-media-item img {
       width: 100%;
       height: 100%;
-      object-fit: contain;
-      background: #ffffff;
+      object-fit: cover;
+      object-position: center;
       display: block;
     }
 
@@ -524,9 +526,9 @@
       height: 100%;
       width: 100%;
       font-size: 9pt;
-      font-weight: 600;
+      font-weight: bold;
       text-align: center;
-      background: #f8fafc;
+      background: #f0f0f0;
     }
   </style>
 </head>
@@ -654,7 +656,7 @@
       <span>Details: <strong id="pDetails">--</strong></span>
     </div>
 
-    <!-- Table -->
+    <!-- کھلا اور واضح Table -->
     <table class="sketch-table">
       <thead>
         <tr>
@@ -669,7 +671,7 @@
         <tr>
           <td id="pKhanta1">--</td>
           <td id="pKhanta2">--</td>
-          <td id="pFinalWeight" style="font-size:10.5pt; background:#f8fafc;">--</td>
+          <td id="pFinalWeight" style="font-size:12pt; background:#fafafa;">--</td>
           <td id="pNagg">--</td>
           <td id="pRate">--</td>
         </tr>
@@ -798,6 +800,7 @@
       if (!isWeightManuallyEdited) calcAverageWeight();
     }
 
+    // بالکل اوریجنل ہائی کوالٹی ریڈر (تصویر کو بغیر مسخ کیے اصل سائز میں لانا)
     function readCleanFile(file) {
       return new Promise((resolve) => {
         const reader = new FileReader();
@@ -936,7 +939,7 @@
       const fileName = `${partyName}_Container_Receipt.pdf`;
 
       const opt = {
-        margin:       [4, 5, 4, 5],
+        margin:       [3, 5, 3, 5],
         filename:     fileName,
         image:        { type: 'jpeg', quality: 0.98 },
         html2canvas:  { scale: 2, useCORS: true, logging: false },
